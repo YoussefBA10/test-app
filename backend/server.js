@@ -8,7 +8,7 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 const logstashHost = process.env.LOGSTASH_HOST || '192.168.126.130';
-const logstashPort = process.env.LOGSTASH_PORT || 5000;
+const logstashPort = process.env.LOGSTASH_PORT || 5044;
 
 // Enable CORS and JSON body parsing
 app.use(cors());
@@ -86,7 +86,7 @@ app.use((req, res, next) => {
     // Record metrics
     httpRequestCounter.labels(req.method, req.route ? req.route.path : req.path, res.statusCode).inc();
     end({ method: req.method, route: req.route ? req.route.path : req.path, status_code: res.statusCode });
-    
+
     // Log request
     logger.info('HTTP Request', {
       method: req.method,
@@ -147,10 +147,10 @@ app.put('/api/items/:id', (req, res) => {
     logger.warn(`Failed item update: not found`, { itemId: id });
     return res.status(404).json({ error: 'Item not found' });
   }
-  
+
   const { name, description, status } = req.body;
   items[index] = { ...items[index], name: name || items[index].name, description: description || items[index].description, status: status || items[index].status };
-  
+
   logger.info('Item updated successfully', { itemId: id });
   res.json(items[index]);
 });
