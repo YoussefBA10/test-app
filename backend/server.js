@@ -8,7 +8,7 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 const logstashHost = process.env.LOGSTASH_HOST || '192.168.126.130';
-const logstashPort = process.env.LOGSTASH_PORT || 5044;
+const logstashPort = process.env.LOGSTASH_PORT || 5000;
 
 // Enable CORS and JSON body parsing
 app.use(cors());
@@ -34,7 +34,6 @@ const httpRequestDurationMicroseconds = new promClient.Histogram({
 });
 
 // --- Observability: Logging ---
-// Standard stdout format for container environments
 const transports = [
   new winston.transports.Console({
     format: winston.format.combine(
@@ -44,10 +43,11 @@ const transports = [
   })
 ];
 
+
 const logger = winston.createLogger({
   level: 'info',
   transports: transports,
-  defaultMeta: { service: 'infra-test-app' }
+  defaultMeta: { service: 'test-app' }
 });
 
 // Simple TCP connection for direct Logstash shipping
